@@ -7,21 +7,19 @@ ENV PORT=80
 
 # Install app dependencies
 COPY backend/package*.json ./
+RUN npm install --production
+
+# Copy and build frontend
+COPY ./frontend ./frontend
+WORKDIR /frontend
+RUN npm install @vue/cli-service -g && npm install && npm run build
+WORKDIR ..
 
 # Bundle app source
 COPY ./backend .
 
-COPY ./frontend ./frontend
-
-RUN echo 'npm install --production' >> /boot.sh
-RUN echo 'cd ./frontend' >> /boot.sh
-RUN echo 'npm install' >> /boot.sh
-RUN echo 'npm install @vue/cli-service -g' >> /boot.sh
-RUN echo 'npm run build' >> /boot.sh
-RUN echo 'cd ..' >> /boot.sh
-
 ENV BUILD_DIR=frontend/dist
 
 # npm start, make sure to have a start attribute in "scripts" in package.json
-RUN echo 'sleep 5' >> /boot.sh
-CMD sh /boot.sh && npm start
+RUN echo 'sleep 5' >> /buildfrontend.sh
+CMD sh /buildfrontend.sh && npm start
