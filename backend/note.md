@@ -1,0 +1,1 @@
+The built files from `frontend` are moved here by the Dockerfile build process.
