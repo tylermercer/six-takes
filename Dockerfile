@@ -15,7 +15,7 @@ COPY ./frontend ./frontend
 
 RUN echo 'npm install --production' >> /boot.sh
 RUN echo 'cd ./frontend' >> /boot.sh
-RUN echo 'npm install --production' >> /boot.sh
+RUN echo 'npm install' >> /boot.sh
 RUN echo 'npm run build' >> /boot.sh
 RUN echo 'cd ..' >> /boot.sh
 
