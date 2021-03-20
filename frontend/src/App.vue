@@ -1,5 +1,5 @@
 <template>
-  <ConnectScreen class="main" v-if="!usernameAlreadySelected" @submit="onSubmit"/>
+  <ConnectScreen class="main" v-if="socket == null" @submit="onSubmit"/>
   <WaitingScreen class="main" v-else-if="!gameStarted"/>
 </template>
 
