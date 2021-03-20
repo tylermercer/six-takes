@@ -1,6 +1,12 @@
 import { io } from "socket.io-client";
 
-const URL = "http://localhost:3000";
-const socket = io(URL, { autoConnect: false });
+const URL = window.webpackHotUpdate ? "http://localhost:3000" : "https://sixtakesgame.openode.io";
+const createSocket = (gamecode) => {
+  const options = { autoConnect: false }
+  if (gamecode) {
+    options.query = `gamecode=${gamecode}`
+  }
+  return io(URL, options);
+}
 
-export default socket;
+export default createSocket;

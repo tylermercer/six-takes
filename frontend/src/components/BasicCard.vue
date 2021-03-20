@@ -43,6 +43,7 @@ export default defineComponent({
 
 <style scoped>
 .card {
+  display: inline-block;
   color: purple;
   border: 2px solid purple;
   padding: 10px;

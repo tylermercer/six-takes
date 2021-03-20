@@ -15,12 +15,9 @@ io.use((socket, next) => {
 });
 
 io.on("connection", (socket) => {
-
+  const gamecode = socket.handshake.query.gamecode.toUpperCase()
+  console.log(gamecode);
 });
-
-io.onAny((eventname, ...args) => {
-  console.log("event:", eventname, ...args)
-})
 
 const PORT = process.env.PORT || 3000;
 
