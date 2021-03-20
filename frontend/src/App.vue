@@ -1,6 +1,6 @@
 <template>
-  <ConnectScreen class="main" v-if="socket == null" @submit="onSubmitUsername"/>
-  <WaitingScreen class="main" v-else-if="!gameStarted"/>
+  <ConnectScreen class="main" v-if="game == null" @submit="onSubmitUsername"/>
+  <WaitingScreen class="main" v-else-if="!gameStarted" :game="game"/>
   <GameScreen class="main" v-else />
 </template>
 
@@ -10,7 +10,8 @@ import WaitingScreen from './components/views/WaitingScreen.vue'
 import GameScreen from './components/views/GameScreen.vue'
 
 import createSocket from '@/socket'
-import { onBeforeUnmount, ref } from 'vue'
+import SixTakesGame from '@/core'
+import { onBeforeUnmount, ref, computed } from 'vue'
 
 export default {
   name: 'App',
@@ -20,34 +21,26 @@ export default {
     GameScreen
   },
   setup() {
-    const socket = ref(null) //Will be created when user connects
-    const usernameAlreadySelected = ref(false)
+    const game = ref(null) //Will be created when user connects
 
     const onSubmitUsername = ({username, gamecode}) => {
-      socket.value = createSocket(gamecode)
-      socket.value.on("connect_error", (err) => {
+      game.value = new SixTakesGame(createSocket(gamecode), username, gamecode)
+
+      game.value.socket.on("connect_error", (err) => {
         if (err.message === "invalid username") {
-          usernameAlreadySelected.value = false
+          game.value = null
         }
       });
-      socket.value.onAny((name, ...args) => {
-        console.log(`'${name}' occurred. Args:`, ...args)
-      })
-      usernameAlreadySelected.value = true
-      socket.value.auth = { username }
-      socket.value.connect()
     }
     onBeforeUnmount(() => {
-      if (socket.value) socket.value.off("connect_error")
+      if (game.value) game.value.socket.off("connect_error")
     })
 
-    const gameStarted = ref(false)
-    //TODO: set up code for tracking when game is started, etc.
+    const gameStarted = computed(() => game.value ? game.value.gameIsStarted : false)
 
     return {
       onSubmitUsername,
-      socket,
-      usernameAlreadySelected,
+      game,
       gameStarted,
     }
   },

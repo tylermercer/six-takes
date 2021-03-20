@@ -4,14 +4,15 @@
 
 <script>
 import BasicCard from '../BasicCard.vue'
+import SixTakesGame from '@/core'
 
 export default {
   components: {
     BasicCard
   },
   props: {
-    socket: {
-      type: Object,
+    game: {
+      type: SixTakesGame,
       required: true
     }
   },

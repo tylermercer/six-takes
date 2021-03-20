@@ -1,6 +1,6 @@
 <template>
   <div class="landing">
-    <h1>Six Takes!</h1>
+    <h1>6 Takes!</h1>
     <section id="mode-select">
       <input class="mode" type="radio" id="create" value="create" v-model="mode">
       <label for="create">
@@ -13,7 +13,7 @@
     </section>
     <section>
       <p>
-        Please choose a screen name
+        Please enter a screen name
         <span v-if="!isCreateMode">
           <span v-if="initGamecode">{{" "}}to join room {{gamecode}}</span>
           <span v-else>{{" "}}and the four-letter game code to join</span>
@@ -23,7 +23,7 @@
     </section>
     <section id="username-input">
       <input v-model="tmpUsername" autofocus/>
-      <input id="code-input" v-if="!isCreateMode" @input="initGamecode = ''" v-model="gamecode"/>
+      <input id="code-input" v-if="!isCreateMode" @input="initGamecode = ''" v-model="gamecode" />
       <button :disabled="!canBeSubmitted" @click="submit">{{isCreateMode? "Create game" : "Join game"}}</button>
     </section>
   </div>
@@ -52,7 +52,7 @@ export default {
   },
   methods: {
     submit() {
-      this.$emit('submit', { gamecode: this.gamecode, username: this.tmpUsername })
+      this.$emit('submit', { gamecode: this.isCreateMode? null : this.gamecode, username: this.tmpUsername })
     }
   },
 }
