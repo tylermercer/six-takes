@@ -11,8 +11,6 @@ COPY backend/package*.json ./
 # Bundle app source
 COPY ./backend .
 
-EXPOSE 80
-
 RUN echo 'crond' >> /boot.sh
 
 RUN echo 'npm install --production' >> /boot.sh
