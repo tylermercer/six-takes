@@ -1,0 +1,15 @@
+{
+  "name": "six-takes-backend",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "private": "true",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "author": "Tyler Mercer",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "socket.io": "^4.0.0"
+  }
+}
