@@ -3,7 +3,7 @@ var static = require('node-static');
 var file;
 var serveFiles = !!process.env.BUILD_DIR;
 if (serveFiles) {
-  file = new(static.Server)(__dirname + process.env.BUILD_DIR);
+  file = new(static.Server)(__dirname + '/' + process.env.BUILD_DIR);
 }
 
 const httpServer = require("http").createServer(serveFiles ? function (req, res) {
