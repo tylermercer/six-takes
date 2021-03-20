@@ -11,7 +11,7 @@ RUN npm install --production
 
 # Copy and build frontend
 COPY ./frontend ./frontend
-WORKDIR /frontend
+WORKDIR ./frontend
 RUN npm install @vue/cli-service -g && npm install && npm run build
 WORKDIR ..
 
