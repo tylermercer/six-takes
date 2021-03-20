@@ -16,7 +16,7 @@
         Please enter a username
         <span v-if="!isCreateMode">
           <span v-if="initGamecode">{{" "}}to join room {{gamecode}}</span>
-          <span v-else>{{" "}}and four-letter room code to join</span>
+          <span v-else>{{" "}}and the four-letter game code to join</span>
         </span>
         <span v-else>{{" "}}to create a game</span>
       </p>
@@ -64,5 +64,43 @@ export default {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+#code-input {
+  width: 40px;
+  text-align: center;
+  width: 54px;
+}
+
+input.mode {
+  position: absolute;
+  opacity: 0;
+  height: 0;
+  width: 0;
+  max-height: 0;
+  max-width: 0;
+  z-index: -1;
+  overflow: hidden;
+}
+#mode-select {
+  margin-top: 10px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+}
+input.mode + label {
+  background-color: white;
+  display: block;
+  border-radius: 4px;
+  margin: 10px;
+  padding: 4px;
+  border: 2px solid purple;
+  opacity: 0.6;
+  transform: scale(1);
+  transition: transform ease 0.2s, opacity ease 0.2s;
+  cursor: pointer;
+}
+input.mode:checked + label {
+  opacity: 1;
+  transform: scale(1.2);
 }
 </style>

@@ -1,47 +1,55 @@
 <template>
-  <ConnectScreen class="main" v-if="socket == null" @submit="onSubmit"/>
+  <ConnectScreen class="main" v-if="socket == null" @submit="onSubmitUsername"/>
   <WaitingScreen class="main" v-else-if="!gameStarted"/>
+  <GameScreen class="main" v-else />
 </template>
 
 <script>
-import BasicCard from './components/BasicCard.vue'
 import ConnectScreen from './components/views/ConnectScreen.vue'
 import WaitingScreen from './components/views/WaitingScreen.vue'
+import GameScreen from './components/views/GameScreen.vue'
 
 import createSocket from '@/socket'
+import { onBeforeUnmount, ref } from 'vue'
 
 export default {
   name: 'App',
   components: {
-    BasicCard,
     ConnectScreen,
-    WaitingScreen
+    WaitingScreen,
+    GameScreen
   },
-  data() {
-    return {
-      socket: null, //Will be created when user connects
-      usernameAlreadySelected: false,
-      gameStarted: false,
-    }
-  },
-  methods: {
-    onSubmit({username, gamecode}) {
-      this.socket = createSocket(gamecode)
-      this.socket.on("connect_error", (err) => {
+  setup() {
+    const socket = ref(null) //Will be created when user connects
+    const usernameAlreadySelected = ref(false)
+
+    const onSubmitUsername = ({username, gamecode}) => {
+      socket.value = createSocket(gamecode)
+      socket.value.on("connect_error", (err) => {
         if (err.message === "invalid username") {
-          this.usernameAlreadySelected = false
+          usernameAlreadySelected.value = false
         }
       });
-      this.socket.onAny((name, ...args) => {
+      socket.value.onAny((name, ...args) => {
         console.log(`'${name}' occurred. Args:`, ...args)
       })
-      this.usernameAlreadySelected = true
-      this.socket.auth = { username }
-      this.socket.connect()
+      usernameAlreadySelected.value = true
+      socket.value.auth = { username }
+      socket.value.connect()
     }
-  },
-  beforeUnmount() {
-    if (this.socket) this.socket.off("connect_error")
+    onBeforeUnmount(() => {
+      if (socket.value) socket.value.off("connect_error")
+    })
+
+    const gameStarted = ref(false)
+    //TODO: set up code for tracking when game is started, etc.
+
+    return {
+      onSubmitUsername,
+      socket,
+      usernameAlreadySelected,
+      gameStarted,
+    }
   },
 }
 </script>
@@ -63,11 +71,6 @@ body {
 .main {
   height: 100%;
 }
-#code-input {
-  width: 40px;
-  text-align: center;
-  width: 54px;
-}
 button {
   background-color: purple;
   color: white;
@@ -79,42 +82,14 @@ button {
 button[disabled] {
   opacity: 0.6;
 }
+button:not([disabled]) {
+  cursor: pointer;
+}
 input {
   min-height: 32px;
   font-size: 16px;
   border-radius: 4px;
   margin-right: 10px;
   border: 1px solid gray;
-}
-input.mode {
-  position: absolute;
-  opacity: 0;
-  height: 0;
-  width: 0;
-  max-height: 0;
-  max-width: 0;
-  z-index: -1;
-  overflow: hidden;
-}
-#mode-select {
-  margin-top: 10px;
-  height: 60px;
-  display: flex;
-  align-items: center;
-}
-input.mode + label {
-  background-color: white;
-  display: block;
-  border-radius: 4px;
-  margin: 10px;
-  padding: 4px;
-  border: 2px solid purple;
-  opacity: 0.6;
-  transform: scale(1);
-  transition: transform ease 0.2s;
-}
-input.mode:checked + label {
-  opacity: 1;
-  transform: scale(1.2);
 }
 </style>
