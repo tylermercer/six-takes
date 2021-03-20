@@ -13,7 +13,7 @@
     </section>
     <section>
       <p>
-        Please enter a username
+        Please choose a screen name
         <span v-if="!isCreateMode">
           <span v-if="initGamecode">{{" "}}to join room {{gamecode}}</span>
           <span v-else>{{" "}}and the four-letter game code to join</span>
