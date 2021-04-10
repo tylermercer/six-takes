@@ -3,19 +3,12 @@ import socketIO from "socket.io"
 import { SessionStore, InMemorySessionStore, SessionContext } from './sessionStore'
 import { createGamecode, randomId } from './util'
 
-const port: number = 3000
-
 class App {
     private server: http.Server
-    private port: number
-    private host: string
     private io: socketIO.Server
     private sessionStore: SessionStore
 
-    constructor(port: number) {
-        this.port = +process.env.PORT || port
-        this.host = process.env.PORT ? '0.0.0.0' : 'localhost'
-
+    constructor(private port: number, private host: string) {
         this.server = new http.Server()
         this.io = new socketIO.Server(this.server, {
           cors: {
@@ -78,4 +71,7 @@ class App {
     }
 }
 
-new App(port).start()
+const port = +process.env.PORT || 3000
+const host = process.env.PORT ? '0.0.0.0' : 'localhost'
+
+new App(port, host).start()
