@@ -55,6 +55,9 @@ io.on("connection", (socket) => {
 });
 
 const PORT = process.env.PORT || 3000;
-httpServer.listen(PORT, () =>
+
+const host = process.env.PORT ? '0.0.0.0' : 'localhost'
+
+httpServer.listen(PORT, host, () =>
   console.log(`server listening at http://localhost:${PORT}`)
 );
