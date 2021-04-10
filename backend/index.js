@@ -1,4 +1,3 @@
-const static = require('node-static');
 const util = require('./util');
 const http = require("http");
 const socketio = require("socket.io");
@@ -6,19 +5,11 @@ const socketio = require("socket.io");
 const { InMemorySessionStore } = require("./sessionStore");
 const sessionStore = new InMemorySessionStore();
 
-const file = { value: null };
-const serveFiles = !!process.env.BUILD_DIR;
-if (serveFiles) {
-  file.value = new(static.Server)(__dirname + '/' + process.env.BUILD_DIR);
-}
-
-const httpServer = http.createServer(serveFiles ? function (req, res) {
-  file.value.serve(req, res);
-} : undefined);
+const httpServer = http.createServer();
 
 const io = socketio(httpServer, {
   cors: {
-    origin: "http://localhost:8080", //Allow dev server
+    origin: process.env.PORT ? "https://sixtakesgame.netlify.app" : "http://localhost:8080", //Allow dev server
   },
 });
 
@@ -52,10 +43,12 @@ io.on("connection", (socket) => {
     console.log("Creating game " + gamecode)
   }
   else {
+    //TODO: ensure there is a game with this name
     console.log("Joining game " + gamecode)
   }
   socket.join(gamecode)
   socket.to(gamecode).emit('user joined', {
+    //TODO: debug why this event is not reaching the one who joined
     username: socket.handshake.auth.username,
     userId: socket.userID
   })
