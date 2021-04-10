@@ -2,10 +2,16 @@ const util = require('./util');
 const http = require("http");
 const socketio = require("socket.io");
 
+const static = require("node-static");
+
 const { InMemorySessionStore } = require("./sessionStore");
 const sessionStore = new InMemorySessionStore();
 
-const httpServer = http.createServer();
+const file = new static.Server('./public')
+
+const httpServer = http.createServer((req, res) => {
+  file.serveFile('/index.html', 200, {}, req, res); //Serve a small html file to handle pings from Azure
+});
 
 const io = socketio(httpServer, {
   cors: {
@@ -56,8 +62,8 @@ io.on("connection", (socket) => {
 
 const PORT = process.env.PORT || 3000;
 
-const host = process.env.PORT ? '0.0.0.0' : 'localhost'
+const host = process.env.PORT ? '0.0.0.0' : 'localhost';
 
 httpServer.listen(PORT, host, () =>
-  console.log(`server listening at http://localhost:${PORT}`)
+  console.log(`server listening at http://${host}:${PORT}`)
 );
