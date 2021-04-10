@@ -9,7 +9,12 @@ class App {
     private sessionStore: SessionStore
 
     constructor(private port: number, private host: string) {
-        this.server = new http.Server()
+        this.server = new http.Server((req, res) => {
+          //Respond to GET requests with a tiny HTML document so Azure can ping our app and see that it's alive
+          res.writeHead(200, {'Content-Type': 'text/html'});
+          res.write('<!DOCTYPE html><html><body>OK</body></html>');
+          res.end();
+        })
         this.io = new socketIO.Server(this.server, {
           cors: {
             origin: process.env.PORT ? "https://sixtakesgame.netlify.app" : "http://localhost:8080",
