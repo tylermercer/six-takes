@@ -24,7 +24,7 @@ export default {
   setup(props) {
     const copied = ref(false);
     const copyLink = async () => {
-      await navigator.clipboard.writeText(`https://sixtakesgame.openode.io/${props.game.gamecode}`)
+      await navigator.clipboard.writeText(window.location)
       copied.value = true
     }
     return {
