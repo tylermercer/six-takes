@@ -1,6 +1,6 @@
-const crypto = require("crypto");
-const randomId = () => {
-  return crypto.randomBytes(8).toString("hex")
+const c = require("crypto");
+const randomId = (): string => {
+  return c.randomBytes(8).toString("hex")
 };
 
 const createGamecode = () => {
@@ -16,7 +16,7 @@ const createGamecode = () => {
   return str;
 }
 
-module.exports = {
+export {
   createGamecode,
   randomId
 }
