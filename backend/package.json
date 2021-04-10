@@ -2,9 +2,10 @@
   "name": "six-takes-backend",
   "version": "0.1.0",
   "description": "",
-  "main": "src/index.ts",
+  "main": "dist/index.js",
   "private": "true",
   "scripts": {
+    "build": "tsc",
     "start": "tsc && node dist/index.js"
   },
   "author": "Tyler Mercer",
