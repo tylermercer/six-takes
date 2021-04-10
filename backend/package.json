@@ -6,7 +6,9 @@
   "private": "true",
   "scripts": {
     "build": "tsc",
-    "start": "tsc && node dist/index.js"
+    "serve": "node dist/index.js",
+    "start": "npm run serve",
+    "dev": "tsc && node dist/index.js"
   },
   "author": "Tyler Mercer",
   "license": "UNLICENSED",
