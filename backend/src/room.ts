@@ -54,8 +54,8 @@ class Room {
   public addPlayer(username: string, userId: string, playerSocket: Socket) {
     playerSocket.join(this.gamecode)
     const player = new Player(username, userId)
-    this._players.push(player)
     playerSocket.emit(SELF_JOINED, this._players)
+    this._players.push(player)
     this.ioRoom.emit(USER_JOINED, player)
 
     //TODO: add event listeners to trigger class methods
