@@ -1,4 +1,5 @@
-const c = require("crypto");
+import c from "crypto";
+
 const randomId = (): string => {
   return c.randomBytes(8).toString("hex")
 };

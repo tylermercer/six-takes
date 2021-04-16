@@ -15,7 +15,9 @@ import {
   createGamecode,
   randomId
 } from './util'
-import { ATTEMPTED_TO_JOIN_EXPIRED } from "./events"
+import {
+  ATTEMPTED_TO_JOIN_EXPIRED
+} from "./events"
 
 class App {
     private server: http.Server

@@ -1,5 +1,7 @@
 import { BroadcastOperator, Server, Socket } from "socket.io";
-import { DefaultEventsMap } from "socket.io/dist/typed-events";
+import {
+  DefaultEventsMap
+} from "socket.io/dist/typed-events";
 import {
   GAME_CREATED,
   SELF_JOINED,
