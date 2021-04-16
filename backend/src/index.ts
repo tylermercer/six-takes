@@ -65,6 +65,7 @@ class App {
             username
           )
           this.sessionStore.addSession(new Session(context))
+          socket.handshake.auth.sessionID = context.id
           socket.data = context
           next();
         });
