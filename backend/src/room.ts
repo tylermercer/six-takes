@@ -1,6 +1,11 @@
 import { BroadcastOperator, Server, Socket } from "socket.io";
 import { DefaultEventsMap } from "socket.io/dist/typed-events";
-import { GAME_CREATED, SELF_JOINED, USER_JOINED } from "./events";
+import {
+  GAME_CREATED,
+  SELF_JOINED,
+  USER_JOINED,
+  USER_LEFT
+} from "./events";
 
 const DELAY_BEFORE_EXPIRATION = 30*60*5000 //thirty minutes
 
@@ -59,6 +64,11 @@ class Room {
     this.ioRoom.emit(USER_JOINED, player)
 
     //TODO: add event listeners to trigger class methods
+
+    playerSocket.on('disconnect', () => {
+      this._players = this._players.filter(p => p.id !== userId)
+      this.ioRoom.emit(USER_LEFT, userId)
+    })
 
     this.markUpdated()
   }
