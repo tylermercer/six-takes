@@ -15,6 +15,7 @@ import {
   createGamecode,
   randomId
 } from './util'
+import { ATTEMPTED_TO_JOIN_EXPIRED } from "./events"
 
 class App {
     private server: http.Server
@@ -87,6 +88,11 @@ class App {
           }
           else {
             room = this.roomStore.findRoom(gamecode)
+            if (room == null) {
+              console.log(`${username} attempted to join expired game ${gamecode}`)
+              socket.emit(ATTEMPTED_TO_JOIN_EXPIRED, gamecode)
+              return;
+            }
           }
           console.log(`${username}: joining game ${gamecode}`)
           room.addPlayer(
