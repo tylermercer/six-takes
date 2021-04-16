@@ -35,7 +35,7 @@ class Room {
 
   public get isExpired() {
     const currentTime = new Date().getTime()
-    return this._lastUpdatedTime < DELAY_BEFORE_EXPIRATION
+    return this._lastUpdatedTime < currentTime - DELAY_BEFORE_EXPIRATION
   }
 
   private get ioRoom() : BroadcastOperator<DefaultEventsMap> {
