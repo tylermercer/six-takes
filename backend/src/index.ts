@@ -1,12 +1,26 @@
 import http from "http"
 import socketIO from "socket.io"
-import { SessionStore, InMemorySessionStore, SessionContext } from './sessionStore'
-import { createGamecode, randomId } from './util'
+import {
+  RoomStore,
+  InMemoryRoomStore
+} from "./roomStore"
+import Room from "./room"
+import {
+  SessionStore,
+  InMemorySessionStore,
+  SessionContext,
+  Session
+} from './sessionStore'
+import {
+  createGamecode,
+  randomId
+} from './util'
 
 class App {
     private server: http.Server
     private io: socketIO.Server
     private sessionStore: SessionStore
+    private roomStore: RoomStore
 
     constructor(private port: number, private host: string) {
         this.server = new http.Server((req, res) => {
@@ -15,6 +29,7 @@ class App {
           res.write('<!DOCTYPE html><html><body>OK</body></html>');
           res.end();
         })
+
         this.io = new socketIO.Server(this.server, {
           cors: {
             origin: process.env.PORT ? "https://sixtakesgame.netlify.app" : "http://localhost:8080",
@@ -22,6 +37,7 @@ class App {
         })
 
         this.sessionStore = new InMemorySessionStore()
+        this.roomStore = new InMemoryRoomStore()
 
         this.io.use((socket, next) => {
           const sessionId = socket.handshake.auth.sessionID;
@@ -40,34 +56,44 @@ class App {
           if (!username) {
             return next(new Error("invalid username"));
           }
-          socket.data = new SessionContext(
+          const context = new SessionContext(
             randomId(),
             randomId(),
             username
           )
+          this.sessionStore.addSession(new Session(context))
+          socket.data = context
           next();
         });
       }
 
       public start() {
         this.io.on("connection", (socket) => {
-          const context = socket.data as SessionContext;
-          console.log(`Client ${socket.handshake.auth.username} connected`)
+          const context = socket.data as SessionContext
+          const username = socket.handshake.auth.username
+          console.log(`Client ${username} connected`)
+
           var gamecode = socket.handshake.query.gamecode
+          if (gamecode instanceof Array) {
+            console.error("Bad connect request!")
+            return
+          }
+          let room: Room
           if (!gamecode) {
             gamecode = createGamecode()
-            socket.emit('game created', gamecode)
-            console.log("Creating game " + gamecode)
+            console.log(`${username}: creating game ${gamecode}`)
+            room = new Room(gamecode, this.io, socket)
+            this.roomStore.addRoom(room)
           }
           else {
-            //TODO: ensure there is a game with this name
-            console.log("Joining game " + gamecode)
+            room = this.roomStore.findRoom(gamecode)
           }
-          socket.join(gamecode)
-          socket.to(gamecode).emit('user joined', {
-            username: socket.handshake.auth.username,
-            userId: context.userId
-          })
+          console.log(`${username}: joining game ${gamecode}`)
+          room.addPlayer(
+            socket.handshake.auth.username,
+            context.userId,
+            socket
+          )
         });
 
         this.server.listen(this.port, this.host, () => {

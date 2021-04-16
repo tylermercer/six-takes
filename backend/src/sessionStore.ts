@@ -26,11 +26,15 @@ class Session extends SessionContext {
   public get connected() : boolean {
     return this._connected
   }
+  constructor(ctx: SessionContext) {
+    super(ctx.id, ctx.userId, ctx.username);
+    this._connected = false;
+  }
 }
 
 interface SessionStore {
   findSession(id: string): Session
-  saveSession(id: string, session: Session): void
+  addSession(session: Session): void
   findAllSessions(): Session[]
 }
 
@@ -41,8 +45,8 @@ class InMemorySessionStore implements SessionStore {
     return this.sessions.get(id)
   }
 
-  saveSession(id: string, session: Session) {
-    this.sessions.set(id, session)
+  addSession(session: Session) {
+    this.sessions.set(session.id, session)
   }
 
   findAllSessions() {
