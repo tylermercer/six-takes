@@ -4,6 +4,7 @@ interface RoomStore {
   findRoom(gamecode: string): Room
   addRoom(room: Room): void
   findAllRooms(): Room[]
+  cullExpiredRooms(): void
 }
 
 class InMemoryRoomStore implements RoomStore {
@@ -19,6 +20,12 @@ class InMemoryRoomStore implements RoomStore {
 
   findAllRooms() {
     return [...this.rooms.values()]
+  }
+
+  cullExpiredRooms() {
+    this.rooms.forEach((room, gamecode, rooms) => {
+      if (room.isExpired) rooms.delete(gamecode)
+    })
   }
 }
 

@@ -2,6 +2,8 @@ import { BroadcastOperator, Server, Socket } from "socket.io";
 import { DefaultEventsMap } from "socket.io/dist/typed-events";
 import { GAME_CREATED, SELF_JOINED, USER_JOINED } from "./events";
 
+const DELAY_BEFORE_EXPIRATION = 30*60*5000 //thirty minutes
+
 class Player {
 
   private _name : string;
@@ -25,6 +27,17 @@ class Room {
   
   private _io: Server
 
+  private _lastUpdatedTime: number = new Date().getTime()
+
+  private markUpdated() {
+    this._lastUpdatedTime = new Date().getTime()
+  }
+
+  public get isExpired() {
+    const currentTime = new Date().getTime()
+    return this._lastUpdatedTime < DELAY_BEFORE_EXPIRATION
+  }
+
   private get ioRoom() : BroadcastOperator<DefaultEventsMap> {
     return this._io.to(this.gamecode);
   }
@@ -46,6 +59,8 @@ class Room {
     this.ioRoom.emit(USER_JOINED, player)
 
     //TODO: add event listeners to trigger class methods
+
+    this.markUpdated()
   }
 }
 

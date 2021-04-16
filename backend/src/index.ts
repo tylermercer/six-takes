@@ -70,6 +70,8 @@ class App {
 
       public start() {
         this.io.on("connection", (socket) => {
+          this.roomStore.cullExpiredRooms()
+
           const context = socket.data as SessionContext
           const username = socket.handshake.auth.username
           console.log(`Client ${username} connected`)
