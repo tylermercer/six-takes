@@ -60,6 +60,8 @@ class Room {
 
   public addPlayer(username: string, userId: string, playerSocket: Socket) {
     playerSocket.join(this.gamecode)
+
+    //TODO: handle player already being joined?
     const player = new Player(username, userId)
     playerSocket.emit(SELF_JOINED, this._players)
     this._players.push(player)
