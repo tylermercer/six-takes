@@ -17,7 +17,7 @@ export const pointsFromNumber = (num) => {
 }
 
 class SixTakesGame {
-  constructor(socket, username, gamecode = null) {
+  constructor(client, username, gamecode = null) {
     this.users = ref([])
     this.gamecode = ref('')
     this.isStarted = ref(false)
@@ -32,39 +32,15 @@ class SixTakesGame {
     this.userIsHost = ref(gamecode? false : true)
     this.username = ref('')
     this.userId = ref('')
-    this.socket = socket
+    this.client = client
 
-    socket.on('users', (users) => {
-      if (!this.isStarted.value)
-        this.users.value = users.map(u => {
-          return {
-            username: u.username,
-            userId: u.userId,
-            isSelf: u.userId === socket.id
-          }
-        })
-    })
+    //TODO: sign up, create game, save game code
 
-    socket.on('user joined', (user) => {
-      if (!this.isStarted.value) {
-        if (this.users.value.find(u => u.userId === user.userId) == null)
-          this.users.value = [...this.users.value, {
-            username: user.username,
-            userId: user.userId,
-            isSelf: user.userId === socket.id
-          }]
-      }
-    })
+    //TODO: set up users subscription (insert, update)
 
-    socket.on('game created', (newGamecode) => {
-      setGamecode(newGamecode)
-    })
+    //TODO: set up active cards subscription (insert)
 
-    socket.onAny((name, ...args) => {
-      console.log(`'${name}' occurred. Args:`, ...args)
-    })
-    socket.auth = { username }
-    socket.connect()
+    //TODO: set up card subscription (insert, only user's cards)
   }
 }
 
