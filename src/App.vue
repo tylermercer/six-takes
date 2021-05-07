@@ -9,9 +9,9 @@ import ConnectScreen from './components/views/ConnectScreen.vue'
 import WaitingScreen from './components/views/WaitingScreen.vue'
 import GameScreen from './components/views/GameScreen.vue'
 
-import createSocket from '@/socket'
+import createSupabaseClient from '@/supabase'
 import SixTakesGame from '@/core'
-import { onBeforeUnmount, ref, computed } from 'vue'
+import { ref, computed } from 'vue'
 
 export default {
   name: 'App',
@@ -24,17 +24,9 @@ export default {
     const game = ref(null) //Will be created when user connects
 
     const onSubmitUsername = ({username, gamecode}) => {
-      game.value = new SixTakesGame(createSocket(gamecode), username, gamecode)
-
-      game.value.socket.on("connect_error", (err) => {
-        if (err.message === "invalid username") {
-          game.value = null
-        }
-      });
+      game.value = new SixTakesGame(createSupabaseClient(), username, gamecode)
+      //TODO: handle auth error?
     }
-    onBeforeUnmount(() => {
-      if (game.value) game.value.socket.off("connect_error")
-    })
 
     const gameStarted = computed(() => game.value ? game.value.gameIsStarted : false)
 
